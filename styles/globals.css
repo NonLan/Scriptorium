@@ -1,0 +1,114 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat+Subrayada:wght@400;700&family=Space+Grotesk:wght@300..700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #fdfdfd;
+  --foreground: #282828;
+  --subtitle: #757575;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #282828;
+    --foreground: #fdfdfd;
+    --subtitle: #b3b3b3;
+  }
+}
+
+body {
+  @apply bg-light text-dark font-spaceGrotesk caret-dark;
+}
+
+.dark body {
+  @apply bg-dark text-light caret-light;
+}
+
+.terminal {
+  @apply bg-light text-dark font-spaceMono caret-dark;
+}
+
+.dark .terminal {
+  @apply bg-dark text-light caret-light;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+header {
+  @apply bg-primeRed text-light flex flex-row items-center justify-between p-8 rounded-3xl m-6;
+}
+nav {
+  @apply flex gap-1 md:gap-12 font-bold text-xl;
+}
+#nav-link {
+  @apply text-light text-sm md:text-lg lg:text-xl
+}
+.nav-icon {
+  @apply w-6 md:w-8 lg:w-12 lg:mx-6;
+}
+
+/* Text */
+p {
+  @apply text-lg md:text-xl lg:text-2xl leading-relaxed;
+  color: var(--subtitle);
+}
+h1 {
+  @apply text-center text-4xl md:text-6xl lg:text-8xl font-bold font-montserrat;
+}
+h2 {
+  @apply text-center text-2xl md:text-6xl font-bold font-spaceMono leading-tight;
+}
+h3 {
+  @apply text-center text-2xl lg:text-4xl font-spaceGrotesk text-primeBlue;
+}
+h4 {
+  @apply text-xl lg:text-2xl font-bold font-spaceMono;
+}
+#error {
+  @apply px-24 py-60 text-center text-4xl font-bold font-spaceMono;
+}
+
+section {
+  @apply m-4 lg:m-24 p-8 md:p-16;
+}
+
+footer {
+  @apply bg-primeRed grid grid-cols-2 text-light p-8 sm:p-16 rounded-t-3xl gap-8;
+}
+.footer-link {
+  @apply text-sm;
+}
+
+/* Links */
+a {
+  @apply text-lg md:text-xl lg:text-2xl flex text-center items-center;
+}
+#internal-link {
+  @apply md:w-64 bg-primeRed text-light text-xl md:text-2xl font-bold px-2 py-4 md:px-8 rounded-lg shadow-md hover:bg-primeRedDark;
+  transition: background-color 0.1s ease-out;
+}
+
+.template-card {
+  @apply rounded-lg border-primeRed border-2 p-8;
+}
+
+/* Form */
+.form-container {
+  @apply flex flex-col rounded-2xl border-2 border-primeBlue gap-36;
+}
+label {
+  @apply text-lg md:text-xl lg:text-2xl font-bold;
+}
+input {
+  @apply md:text-lg lg:text-xl p-2 border border-primeRed rounded-2xl;
+}
+
+#newge {
+  caret-color: #000000;
+}
+

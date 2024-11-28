@@ -1,0 +1,125 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+
+model User {
+  // Account info 
+  id            Int     @id @default(autoincrement())
+  firstName     String
+  lastName      String
+  avatar        String?
+  email         String  @unique
+  phoneNumber   BigInt  @unique
+  password      String  
+  accountType   String  @default("user")
+
+  // User's content
+  savedTemplates  Template[]
+  posts           BlogPost[]
+  comments        Comment[]
+  reports         Report[]
+  Rating          Rating[]
+}
+
+model BlogPost {
+  id            Int         @id @default(autoincrement())
+  title         String
+  author        User        @relation(fields: [authorid], references: [id])
+  authorid      Int
+  content       String
+  tags          Tag[]
+  templates     Template?   @relation(fields: [templatesid], references: [id])
+  templatesid   Int?
+  comments      Comment[]
+  rating        Int
+  createdAt     DateTime    @default(now())
+  lastEdited    DateTime?
+  reports       Report[]
+  hidden        Boolean     @default(false)
+
+  Rating Rating[]
+}
+
+model Comment {
+  id          Int         @id @default(autoincrement())
+  author      User        @relation(fields: [authorid], references: [id])
+  authorid    Int
+  content     String
+  replies     Comment[]   @relation(name: "Reply")
+  rating      Int
+  createdAt   DateTime    @default(now())
+  lastEdited  DateTime?
+  reports     Report[]
+  hidden      Boolean     @default(false)
+
+  // A comment is posted under either a blog post or another existing comment
+  BlogPost    BlogPost? @relation(fields: [BlogPostid], references: [id])
+  BlogPostid  Int?
+  Comment     Comment?  @relation(name: "Reply", fields: [Commentid], references: [id])
+  Commentid   Int?
+
+  Rating Rating[] @relation(name: "Reply")
+}
+
+model Rating {
+  id           Int      @id @default(autoincrement())
+  author       User     @relation(fields: [authorid], references: [id])
+  authorid     Int
+  liked        Boolean  // 1 for upvote, 0 for downvote
+
+  // We either put a like on a post or a comment
+  BlogPost     BlogPost? @relation(fields: [BlogPostid], references: [id])
+  BlogPostid   Int?
+  Comment      Comment?  @relation(name: "Reply", fields: [Commentid], references: [id])
+  Commentid    Int?
+}
+
+model Template {
+  id            Int        @id @default(autoincrement())
+  author        User       @relation(fields: [authorid], references: [id])
+  authorid      Int
+  title         String
+  description   String
+  tags          Tag[]      @relation("TemplateTags")
+  code          String
+  language      String
+  stdin         String
+  forkedFrom    Template?  @relation(name: "Forked Template", fields: [forkedFromid], references: [id])
+  forkedFromid  Int?
+  createdAt     DateTime   @default(now())
+  lastEdited    DateTime?
+
+  BlogPost      BlogPost[]
+  Template      Template[] @relation(name: "Forked Template")
+}
+
+model Tag {
+  name          String     @id 
+  BlogPost      BlogPost[]
+  Template      Template[] @relation("TemplateTags")
+}
+
+model Report {
+  id          Int       @id @default(autoincrement())
+  reporter    User      @relation(fields: [reporterid], references: [id])
+  reporterid  Int
+  reason      String
+
+  // A report comes in for either a comment or a blog post.
+  Comment     Comment?  @relation(fields: [Commentid], references: [id])
+  Commentid   Int?
+  BlogPost    BlogPost? @relation(fields: [BlogPostid], references: [id])
+  BlogPostid  Int?
+}
